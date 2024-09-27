@@ -1,15 +1,16 @@
 import axios from "axios";
 
 export const instance = axios.create({
-    baseURL: 'http://api.quqee.tech/',
+    baseURL: 'https://api.quqee.tech/',
+    headers: {
+        'Content-Type': 'application/json',
+    },
 })
 
-export const setupTokenInterceptor = (token: string | null) => {
+export const setupTokenInterceptor = () => {
     instance.interceptors.request.use(
         config => {
-            if (token) {
-                config.headers.Authorization = `Bearer ${token}`
-            }
+            config.headers.Authorization = `Bearer ${localStorage.getItem('ROCP_token')?.slice(1,length-1)}`
             return config;
         }
     )
