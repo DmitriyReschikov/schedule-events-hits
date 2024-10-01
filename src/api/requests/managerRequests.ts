@@ -40,9 +40,9 @@ export const getUsersFromEvent = async (eventId: number) => {
     }
 }
 
-export const getMyEvents = async (queryParams: string) => {
+export const getMyEvents = async () => {
     try {
-        const events = await instance.get<Event[]>(`/manager/event/my?${queryParams}`)
+        const events = await instance.get<Event[]>(`/manager/event/my?size=5000}`)
         return events.data
     }
     catch (error) {
@@ -50,9 +50,9 @@ export const getMyEvents = async (queryParams: string) => {
     }
 }
 
-export const getAppsToBeManager = async (queryParams: string) => {
+export const getAppsToBeManager = async () => {
     try {
-        const events = await instance.get<ApplicationView[]>(`/manager/event/my?${queryParams}`)
+        const events = await instance.get<ApplicationView[]>(`/manager/application?size=5000`)
         return events.data
     }
     catch (error) {

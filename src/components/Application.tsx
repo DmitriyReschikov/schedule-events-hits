@@ -1,21 +1,26 @@
-import { Button, Card, Typography } from "antd";
+import { Button, Card, Col, Typography } from "antd";
 import { ApplicationView } from "../interfaces/DTOs/ManagerApp";
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import { approveManagerApp, rejectManagerApp } from "../api/requests/managerRequests";
 
-const Application = (Application: ApplicationView) => {
+interface AppProps {
+    Application: ApplicationView;
+    setIsUpdating: (isUpdating: boolean) => void;
+}
+
+const Application: React.FC<AppProps> = ({Application, setIsUpdating}) => {
 
     const {user, application, organization } = Application
     
     const actions: React.ReactNode[] = [
-        <Button onClick={() => approveManagerApp(application.applicationId)}><CheckOutlined /></Button> ,   
-        <Button onClick={() => rejectManagerApp(application.applicationId)}><CloseOutlined /></Button>,
+        <Button onClick={async () => {await approveManagerApp(application.applicationId); setIsUpdating(true)}}><CheckOutlined style={{color: 'green'}}/></Button> ,   
+        <Button onClick={async () => {await rejectManagerApp(application.applicationId); setIsUpdating(true)}}><CloseOutlined style={{color: 'red'}}/></Button>,
       ];
 
     return (
         <Card actions={actions}>
-            <Typography.Text>Заявка от {user.username}</Typography.Text>
-
+            <Col><Typography.Text style={{marginBottom: 20}}>Заявка от {user.username}</Typography.Text></Col>
+            <Col><Typography.Text>в компанию {organization.name}</Typography.Text></Col>
         </Card>
     )
 }

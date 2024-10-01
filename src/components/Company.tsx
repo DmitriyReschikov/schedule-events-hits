@@ -25,7 +25,7 @@ const Company: React.FC<CompanyProps> = ({ company, setIsUpdating }) => {
     }
 
     const actions: React.ReactNode[] = [
-        <DeleteOutlined key='delete' onClick={deleteOrg} />,
+        <DeleteOutlined style={{color: 'red'}} key='delete' onClick={deleteOrg} />,
         <EditOutlined key="edit" onClick={editOrg} />,
     ]
 

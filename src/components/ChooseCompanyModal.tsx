@@ -3,16 +3,17 @@ import { useEffect, useState } from "react";
 import { OrganizationView } from "../interfaces/DTOs/Organization";
 import { getOrganizations } from "../api/requests/adminRequests";
 import { registerManager } from "../api/requests/managerRequests";
+import { toast } from "react-toastify";
 
 interface ChooseCompanyModalProps {
     isOpen: boolean;
     setIsOpen: (open: boolean) => void;
 }
 const ChooseCompanyModal: React.FC<ChooseCompanyModalProps> = ({ isOpen, setIsOpen }) => {
-
     const [currentCompanyId, setCurrentCompanyId] =  useState<number | undefined>(undefined)
     const [companies, setCompanies] = useState<OrganizationView[]>()
     const [isError, setIsError] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
     useEffect(() => {
         const fetchCompanies = async () => {
@@ -28,11 +29,19 @@ const ChooseCompanyModal: React.FC<ChooseCompanyModalProps> = ({ isOpen, setIsOp
     const closeModal = () => {
         setCurrentCompanyId(undefined)
         setIsOpen(false)
+        setIsError(false)
     }
 
     const sendApplication = async () => {
         if (currentCompanyId) {
+            setIsLoading(true)
             await registerManager(currentCompanyId)
+            toast.success("Ваша заявка отправлена"); 
+            setIsLoading(false)
+            setIsOpen(false)
+        }
+        else {
+            setIsError(true)
         }
 
         
@@ -44,6 +53,7 @@ const ChooseCompanyModal: React.FC<ChooseCompanyModalProps> = ({ isOpen, setIsOp
             <Button
                 type="primary"
                 onClick={sendApplication}
+                loading={isLoading}
             >Отправить заявку в компанию</Button>
         ]}>
             <Select style={{ width: '100%' }} onSelect={(value) => setCurrentCompanyId(value)}> 

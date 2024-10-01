@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserAddOutlined, ScheduleOutlined, ContactsOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu, Typography } from 'antd';
@@ -6,15 +6,18 @@ import { Link, useLocation } from 'react-router-dom';
 import { UserDTO } from "../interfaces/DTOs/User";
 import { getUser } from "../api/requests/userRequests";
 import { setupTokenInterceptor } from "../api/axios/instance";
-import { setRoles } from "../redux/userSlice";
+import { setInfo } from "../redux/userSlice";
 import { AppDispatch } from "../redux/store";
 import { useDispatch } from "react-redux";
+import { AuthContext, IAuthContext } from "react-oauth2-code-pkce";
+import SubMenu from "antd/es/menu/SubMenu";
 
 const Header = () => {
     const location = useLocation()
-    const [current, setCurrent] = useState<string>(location.pathname.slice(1) || 'events') ;
+    const [current, setCurrent] = useState<string>(location.pathname.slice(1) || 'events');
     const [user, setUser] = useState<UserDTO>()
     const dispatch: AppDispatch = useDispatch();
+    const { logOut } = useContext<IAuthContext>(AuthContext)
 
 
     useEffect(() => {
@@ -30,8 +33,9 @@ const Header = () => {
     }, [])
 
     const roles: string[] = user?.roles || [];
-    dispatch(setRoles({roles}))
-    
+    const id: string = user?.id || ''
+    dispatch(setInfo({ roles, id }))
+
 
     const onClick: MenuProps['onClick'] = (e) => {
         setCurrent(e.key);
@@ -61,8 +65,12 @@ const Header = () => {
                     <Link to="/applications">Заявки</Link>
                 </Menu.Item>
             }
-            <Menu.Item key='email' disabled style={{ cursor: "default", marginLeft: 'auto' }}>
-                <Typography.Text>{user?.email}</Typography.Text>
+            <Menu.Item key='email' style={{ marginLeft: 'auto' }}>
+                <SubMenu title={user?.email}>
+                    <Menu.Item key='logout'>
+                        <Typography.Text onClick={() => logOut()}>Выход</Typography.Text>
+                    </Menu.Item>
+                </SubMenu>
             </Menu.Item>
         </Menu>
     );

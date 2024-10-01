@@ -17,5 +17,5 @@ export interface NewEvent {
     startDateTime: string;
     endDateTime: string;
     deadlineDateTime: string;
-    organizationId: number;
+    organizationId: number | null;
 }
